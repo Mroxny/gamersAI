@@ -56,3 +56,6 @@ def preprocess_games(df: pd.DataFrame):
 def convert_estimated_owners(owners_range):
     lower, upper = owners_range.split(' - ')
     return (int(lower) + int(upper) /2)
+
+def create_model_input_table(games: pd.DataFrame) -> pd.DataFrame:
+    return games
