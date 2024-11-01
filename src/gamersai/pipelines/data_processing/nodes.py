@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def preprocess_gamers(df: pd.DataFrame):
+def preprocess_games(df: pd.DataFrame):
 
     df[['Genre 1', 'Genre 2']] = df['Genres'].str.split(',', n=2, expand=True)[[0, 1]]
     df['Genre 1'] = df['Genre 1'].str.strip()
