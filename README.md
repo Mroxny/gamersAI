@@ -5,7 +5,6 @@
 ## Overview
 
 This is your new Kedro project with PySpark setup, which was generated using `kedro 0.19.9`.
-
 Take a look at the [Kedro documentation](https://docs.kedro.org) to get started.
 
 ## Rules and guidelines
