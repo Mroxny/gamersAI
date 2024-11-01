@@ -18,6 +18,9 @@ In order to get the best out of the template:
 
 ## First setup
 
+> [!IMPORTANT]  
+> Please make sure that you have installed **Python 3.10**
+
 ### Create virtual environment using `venv`
 
 ```
