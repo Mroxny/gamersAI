@@ -24,6 +24,11 @@ data/**
 ##########################
 # Common files
 
+# VS Code
+.vscode/*
+.history/
+*.vsix
+
 # IntelliJ
 .idea/
 *.iml
