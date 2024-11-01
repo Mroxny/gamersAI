@@ -17,9 +17,24 @@ In order to get the best out of the template:
 * Don't commit data to your repository
 * Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
 
-## How to install dependencies
+## First setup
 
-Declare any dependencies in `requirements.txt` for `pip` installation.
+### Create virtual environment using `venv`
+
+```
+python -m venv venv
+```
+
+### Activate virtual environment
+> Note: if you are working on Windows use this command first:
+> 
+> `Set-ExecutionPolicy Unrestricted -Scope Process`
+
+```
+.\venv\Scripts\activate
+```
+
+### Declare any dependencies in `requirements.txt` for `pip` installation.
 
 To install them, run:
 
