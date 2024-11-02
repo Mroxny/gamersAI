@@ -10,6 +10,8 @@ conf/**/*credentials*
 
 # ignore everything in the following folders
 data/**
+.viz/
+
 
 # except their sub-folders
 !data/**/
@@ -19,7 +21,6 @@ data/**
 
 # keep also the example dataset
 !data/01_raw/*
-
 
 ##########################
 # Common files
@@ -154,4 +155,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-/.viz
