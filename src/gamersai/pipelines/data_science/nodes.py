@@ -22,8 +22,8 @@ def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
         Split data.
     """
 
-    X = data[parameters["features"]]
-    y = data["Estimated owners (avg)"]
+    X = data.drop(parameters["features"], axis='columns')
+    y = data['Estimated owners (avg)']
 
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=parameters["test_size"], random_state=parameters["random_state"])
