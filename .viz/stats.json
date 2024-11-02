@@ -1,0 +1,1 @@
+{"games": {"rows": 85103, "columns": 39, "file_size": 256785419}, "preprocessed_games": {"rows": 81543, "columns": 21, "file_size": 1236580}, "model_input_table": {"rows": 81543, "columns": 21, "file_size": 1236580}, "X_train": {"rows": 65234, "columns": 20}, "X_test": {"rows": 16309, "columns": 20}}

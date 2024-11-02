@@ -1,0 +1,17 @@
+games:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/games.csv
+
+preprocessed_games:
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/preprocessed_games.pq
+
+model_input_table:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/model_input_table.pq
+
+trained_model:
+  type: pickle.PickleDataset
+  filepath: data/06_models/trained_model.pickle
+  versioned: true
+
