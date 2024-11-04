@@ -4,10 +4,12 @@ generated using Kedro 0.19.9
 """
 import logging
 import pandas as pd
+import wandb
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
+import wandb.sklearn
 
-def train_svr_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict) -> SVR:
+def train_svr_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> SVR:
     """Trains a Support Vector Regressor (SVR) model.
 
     Args:
@@ -17,10 +19,20 @@ def train_svr_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict)
     Returns:
         Trained SVR model.
     """
-    #model = SVR(kernel='rbf', C=10.0, epsilon=0.01)
     model = SVR(kernel=parameters["kernel"], C=parameters["C"], epsilon=parameters["epsilon"])
 
     model.fit(X_train, y_train)
+
+    # run = wandb.init(
+    #     # set the wandb project where this run will be logged
+    #     project="gamersAI",
+
+    #     # track hyperparameters and run metadata
+    #     config=model.get_params()
+    # )
+    # #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
+    # wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
+    #run.finish()
     return model
 
 def evaluate_svr_model(

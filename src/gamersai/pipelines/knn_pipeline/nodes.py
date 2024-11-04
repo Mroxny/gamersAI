@@ -6,8 +6,10 @@ import logging
 import pandas as pd
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import r2_score
+import wandb
+import wandb.sklearn
 
-def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict) -> KNeighborsRegressor:
+def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> KNeighborsRegressor:
     """Trains a K-Nearest Neighbors Regressor model.
 
     Args:
@@ -20,6 +22,16 @@ def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict)
     #model = KNeighborsRegressor(n_neighbors=8)
     model = KNeighborsRegressor(n_neighbors=parameters["n_neighbors"])
     model.fit(X_train, y_train)
+    run = wandb.init(
+        # set the wandb project where this run will be logged
+        project="gamersAI",
+
+        # track hyperparameters and run metadata
+        config=model.get_params()
+    )
+    #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
+    wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
+    run.finish()
     return model
 
 def evaluate_knn_model(

@@ -17,7 +17,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_svr_model,
-                inputs=["X_train", "y_train","params:model_options"],
+                inputs=["X_train", "y_train","X_test","y_test","params:model_options"],
                 outputs="svr_model",
                 name="train_svr_model_node",
             ),

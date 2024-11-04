@@ -46,7 +46,18 @@ def train_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame,
     
     model = RandomForestRegressor()
     model.fit(X_train, y_train)
-    
+
+    run = wandb.init(
+        # set the wandb project where this run will be logged
+        project="gamersAI",
+
+        # track hyperparameters and run metadata
+        config=model.get_params()
+    )
+    #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
+    wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
+
+    run.finish()
     return model
 
 
