@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 
-def train_svr_model(X_train: pd.DataFrame, y_train: pd.Series) -> SVR:
+def train_svr_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict) -> SVR:
     """Trains a Support Vector Regressor (SVR) model.
 
     Args:
@@ -17,7 +17,9 @@ def train_svr_model(X_train: pd.DataFrame, y_train: pd.Series) -> SVR:
     Returns:
         Trained SVR model.
     """
-    model = SVR(kernel='rbf', C=10.0, epsilon=0.01)
+    #model = SVR(kernel='rbf', C=10.0, epsilon=0.01)
+    model = SVR(kernel=parameters["kernel"], C=parameters["C"], epsilon=parameters["epsilon"])
+
     model.fit(X_train, y_train)
     return model
 

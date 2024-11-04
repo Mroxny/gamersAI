@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import r2_score
 
-def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series) -> KNeighborsRegressor:
+def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict) -> KNeighborsRegressor:
     """Trains a K-Nearest Neighbors Regressor model.
 
     Args:
@@ -17,7 +17,8 @@ def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series) -> KNeighborsRegr
     Returns:
         Trained K-Nearest Neighbors model.
     """
-    model = KNeighborsRegressor(n_neighbors=8)
+    #model = KNeighborsRegressor(n_neighbors=8)
+    model = KNeighborsRegressor(n_neighbors=parameters["n_neighbors"])
     model.fit(X_train, y_train)
     return model
 

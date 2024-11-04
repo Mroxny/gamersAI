@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.linear_model import ElasticNet
 from sklearn.metrics import r2_score
 
-def train_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series) -> ElasticNet:
+def train_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict) -> ElasticNet:
     """Trains an ElasticNet regression model.
 
     Args:
@@ -17,7 +17,9 @@ def train_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series) -> Elastic
     Returns:
         Trained ElasticNet model.
     """
-    model = ElasticNet(alpha=1.0, l1_ratio=0.5, random_state=101)
+    #model = ElasticNet(alpha=1.0, l1_ratio=0.5, random_state=101)
+    model = ElasticNet(alpha=parameters["alpha"], l1_ratio=parameters["l1_ratio"], random_state=parameters["random_state"])
+    
     model.fit(X_train, y_train)
     return model
 

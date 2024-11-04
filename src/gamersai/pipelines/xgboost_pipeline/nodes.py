@@ -7,7 +7,7 @@ import pandas as pd
 from xgboost import XGBRegressor
 from sklearn.metrics import r2_score
 
-def train_xgboost_model(X_train: pd.DataFrame, y_train: pd.Series) -> XGBRegressor:
+def train_xgboost_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict) -> XGBRegressor:
     """Trains the XGBoost regression model.
 
     Args:
@@ -17,7 +17,9 @@ def train_xgboost_model(X_train: pd.DataFrame, y_train: pd.Series) -> XGBRegress
     Returns:
         Trained XGBoost model.
     """
-    model = XGBRegressor(objective='reg:squarederror', n_estimators=100, learning_rate=0.1, max_depth=3)
+    #model = XGBRegressor(objective='reg:squarederror', n_estimators=100, learning_rate=0.1, max_depth=3)
+    model = XGBRegressor(objective=parameters["objective"], n_estimators=parameters["n_estimators"], learning_rate=parameters["learning_rate"], max_depth=parameters["max_depth"])
+
     model.fit(X_train, y_train)
     return model
 

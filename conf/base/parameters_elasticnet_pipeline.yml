@@ -3,3 +3,7 @@
 #
 # Documentation for this file format can be found in "Parameters"
 # Link: https://docs.kedro.org/en/0.19.9/configuration/parameters.html
+model_options:
+  alpha : 1.0
+  l1_ratio : 0.5
+  random_state : 101
