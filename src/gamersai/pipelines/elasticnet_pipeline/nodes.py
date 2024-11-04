@@ -18,7 +18,7 @@ def train_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series, parameters
         Trained ElasticNet model.
     """
     #model = ElasticNet(alpha=1.0, l1_ratio=0.5, random_state=101)
-    model = ElasticNet(alpha=parameters["alpha"], l1_ratio=parameters["l1_ratio"], random_state=parameters["random_state"])
+    model = ElasticNet(alpha=parameters["alpha"], l1_ratio=parameters["l1_ratio"], random_state=parameters["random_state_elasticnet"])
     
     model.fit(X_train, y_train)
     return model

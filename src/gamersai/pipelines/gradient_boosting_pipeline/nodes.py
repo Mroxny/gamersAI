@@ -14,7 +14,7 @@ def train_gradient_boosting_model(X_train: pd.DataFrame, y_train: pd.Series, par
         Trained Gradient Boosting model.
     """
     #model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=101)
-    model = GradientBoostingRegressor(n_estimators=parameters["n_estimators"], learning_rate=parameters["learning_rate"], max_depth=parameters["max_depth"], random_state=parameters["random_state"])
+    model = GradientBoostingRegressor(n_estimators=parameters["n_estimators_boosting"], learning_rate=parameters["learning_rate_boosting"], max_depth=parameters["max_depth_boosting"], random_state=parameters["random_state_boosting"])
 
     model.fit(X_train, y_train)
     return model

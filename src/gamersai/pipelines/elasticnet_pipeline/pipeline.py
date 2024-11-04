@@ -17,7 +17,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_elasticnet_model,
-                inputs=["X_train", "y_train"],
+                inputs=["X_train", "y_train","params:model_options"],
                 outputs="elasticnet_model",
                 name="train_elasticnet_model_node",
             ),

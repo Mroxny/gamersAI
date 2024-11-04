@@ -18,7 +18,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_gradient_boosting_model,
-                inputs=["X_train", "y_train"],
+                inputs=["X_train", "y_train","params:model_options"],
                 outputs="gradient_boosting_model",
                 name="train_gradient_boosting_model_node",
             ),
