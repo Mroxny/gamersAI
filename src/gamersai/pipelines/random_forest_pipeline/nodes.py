@@ -6,10 +6,12 @@ import logging
 from typing import Tuple
 
 import pandas as pd
+import wandb
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
+import wandb.sklearn
 
 
 def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
@@ -31,7 +33,7 @@ def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
     return X_train, X_test, y_train, y_test
 
 
-def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> RandomForestRegressor:
+def train_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series) -> RandomForestRegressor:
     """Trains the linear regression model.
 
     Args:
@@ -41,8 +43,21 @@ def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> RandomForestRegres
     Returns:
         Trained model.
     """
+    
     model = RandomForestRegressor()
     model.fit(X_train, y_train)
+
+    run = wandb.init(
+        # set the wandb project where this run will be logged
+        project="gamersAI",
+
+        # track hyperparameters and run metadata
+        config=model.get_params()
+    )
+    #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
+    wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
+
+    run.finish()
     return model
 
 
@@ -56,7 +71,10 @@ def evaluate_model(
         X_test: Testing data of independent features.
         y_test: Testing data for price.
     """
+    
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
     logger = logging.getLogger(__name__)
     logger.info("Model has a coefficient R^2 of %.3f on test data.", score)
+    
+   

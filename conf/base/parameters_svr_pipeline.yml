@@ -1,0 +1,9 @@
+# This is a boilerplate parameters config generated for pipeline 'svr_pipeline'
+# using Kedro 0.19.9.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://docs.kedro.org/en/0.19.9/configuration/parameters.html
+model_options:
+  kernel : 'rbf' 
+  C : 10.0 
+  epsilon : 0.01

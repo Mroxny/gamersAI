@@ -1,0 +1,10 @@
+# This is a boilerplate parameters config generated for pipeline 'gradient_boosting_pipeline'
+# using Kedro 0.19.9.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://docs.kedro.org/en/0.19.9/configuration/parameters.html
+model_options:
+  n_estimators_boosting : 100 
+  learning_rate_boosting : 0.1 
+  max_depth_boosting : 3 
+  random_state_boosting : 101
