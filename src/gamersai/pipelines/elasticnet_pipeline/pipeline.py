@@ -4,7 +4,7 @@ generated using Kedro 0.19.9
 """
 from kedro.pipeline import Pipeline, node, pipeline
 from .nodes import train_elasticnet_model, evaluate_elasticnet_model
-from ..data_science.nodes import split_data  
+from ..random_forest_pipeline.nodes import split_data 
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(

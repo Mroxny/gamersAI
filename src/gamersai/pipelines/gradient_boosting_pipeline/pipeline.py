@@ -5,7 +5,7 @@ generated using Kedro 0.19.9
 
 from kedro.pipeline import Pipeline, node, pipeline
 from .nodes import train_gradient_boosting_model, evaluate_gradient_boosting_model
-from ..data_science.nodes import split_data
+from ..random_forest_pipeline.nodes import split_data
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(

@@ -5,6 +5,7 @@ generated using Kedro 0.19.9
 import logging
 import pandas as pd
 import wandb
+import wandb.sklearn
 from xgboost import XGBRegressor
 from sklearn.metrics import r2_score
 from wandb.integration.xgboost import WandbCallback
@@ -21,17 +22,11 @@ def train_xgboost_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.Da
     """
     #model = XGBRegressor(objective='reg:squarederror', n_estimators=100, learning_rate=0.1, max_depth=3)
     model = XGBRegressor(objective=parameters["objective"], n_estimators=parameters["n_estimators"], learning_rate=parameters["learning_rate"], max_depth=parameters["max_depth"])
-    run = wandb.init(
-        # set the wandb project where this run will be logged
-        project="gamersAI",
-
-        # track hyperparameters and run metadata
-        config=model.get_params()
-    )
-    model.fit(X_train, y_train)
-
     
-    run.finish()
+    model.fit(X_train, y_train)
+    wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
+    wandb.sklearn.plot_summary_metrics(model, X_train, y_train, X_test, y_test)
+    
     return model
 
 def evaluate_xgboost_model(
@@ -44,7 +39,13 @@ def evaluate_xgboost_model(
         X_test: Testing data of independent features.
         y_test: Testing data for the target.
     """
+    run = wandb.run
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
     logger = logging.getLogger(__name__)
     logger.info("XGBoost model has a coefficient R^2 of %.3f on test data.", score)
+    to_log = {
+        "name" : "xgboost",
+        "score":score
+        }
+    run.log(to_log)

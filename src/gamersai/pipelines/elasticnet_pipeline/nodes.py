@@ -22,16 +22,10 @@ def train_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd
     #model = ElasticNet(alpha=1.0, l1_ratio=0.5, random_state=101)
     model = ElasticNet(alpha=parameters["alpha"], l1_ratio=parameters["l1_ratio"], random_state=parameters["random_state_elasticnet"])
     model.fit(X_train, y_train)
-    run = wandb.init(
-        # set the wandb project where this run will be logged
-        project="gamersAI",
-
-        # track hyperparameters and run metadata
-        config=model.get_params()
-    )
     #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
     wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
-    run.finish()
+    wandb.sklearn.plot_summary_metrics(model, X_train, y_train, X_test, y_test)
+    
     return model
 
 def evaluate_elasticnet_model(
@@ -44,7 +38,13 @@ def evaluate_elasticnet_model(
         X_test: Testing data of independent features.
         y_test: Testing data for the target.
     """
+    run = wandb.run
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
     logger = logging.getLogger(__name__)
     logger.info("ElasticNet model has a coefficient R^2 of %.3f on test data.", score)
+    to_log = {
+        "name" : "ElasticNet",
+        "score" : score
+        }
+    run.log(to_log)

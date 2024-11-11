@@ -22,16 +22,11 @@ def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFr
     #model = KNeighborsRegressor(n_neighbors=8)
     model = KNeighborsRegressor(n_neighbors=parameters["n_neighbors"])
     model.fit(X_train, y_train)
-    run = wandb.init(
-        # set the wandb project where this run will be logged
-        project="gamersAI",
-
-        # track hyperparameters and run metadata
-        config=model.get_params()
-    )
+    
     #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
     wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
-    run.finish()
+    wandb.sklearn.plot_summary_metrics(model, X_train, y_train, X_test, y_test)
+    
     return model
 
 def evaluate_knn_model(
@@ -44,7 +39,13 @@ def evaluate_knn_model(
         X_test: Testing data of independent features.
         y_test: Testing data for the target.
     """
+    run = wandb.run
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
     logger = logging.getLogger(__name__)
     logger.info("K-Nearest Neighbors model has a coefficient R^2 of %.3f on test data.", score)
+    to_log = {
+        "name" : "KNN",
+        "score":score
+        }
+    run.log(to_log)
