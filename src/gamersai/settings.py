@@ -4,11 +4,11 @@ https://docs.kedro.org/en/stable/kedro_project_setup/settings.html."""
 
 # Instantiated project hooks.
 #from gamersai.hooks import SparkHooks  # noqa: E402
-#from gamersai.hook_module import WAndBPipelineHook
+from gamersai.hook_module import WAndBPipelineHook
 
 # Hooks are executed in a Last-In-First-Out (LIFO) order.
 #HOOKS = (SparkHooks(),)
-#HOOKS = (WAndBPipelineHook("gamersAI"),)
+HOOKS = (WAndBPipelineHook("gamersAI"),)
 
 # Installed plugins for which to disable hook auto-registration.
 # DISABLE_HOOKS_FOR_PLUGINS = ("kedro-viz",)

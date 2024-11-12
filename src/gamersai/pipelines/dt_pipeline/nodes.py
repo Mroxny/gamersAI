@@ -7,7 +7,10 @@ import pandas as pd
 import wandb
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import r2_score
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
 import wandb.sklearn
+import os
 
 def train_tree_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> DecisionTreeRegressor:
     """Trains a Support Vector Regressor (SVR) model.
@@ -43,6 +46,7 @@ def evaluate_tree_model(
         # set the wandb project where this run will be logged
         project="gamersAI",
         name = "DT",
+        group=os.environ["WANDB_RUN_GROUP"],
         # track hyperparameters and run metadata
         config=regressor.get_params()
     )
@@ -51,10 +55,14 @@ def evaluate_tree_model(
     run = wandb.run
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
     logger = logging.getLogger(__name__)
     logger.info("DT model has a coefficient R^2 of %.3f on test data.", score)
     to_log = {
-            "score":score
+            "mse" : mse,
+            "mae" : mae,
+            "R2 score":score
               }
     run.log(to_log)
     run.finish()

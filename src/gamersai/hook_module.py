@@ -1,5 +1,6 @@
 from kedro.framework.hooks import hook_impl
 import wandb
+import os
 
 class WAndBPipelineHook:
     def __init__(self, project_name):
@@ -7,13 +8,6 @@ class WAndBPipelineHook:
 
     @hook_impl
     def before_pipeline_run(self, run_params, pipeline, catalog, **kwargs):
-        
         # Initialize W&B once at the start of the pipeline
-        wandb.init(
-            project=self.project_name
-        )
+        os.environ["WANDB_RUN_GROUP"] = "experiment- " + wandb.util.generate_id()
 
-    @hook_impl
-    def after_pipeline_run(self, run_params, pipeline, catalog, **kwargs):
-        # Finalize W&B after the pipeline finishes
-        wandb.finish()
