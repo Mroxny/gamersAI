@@ -23,7 +23,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=evaluate_xgboost_model,
-                inputs=["xgboost_model", "X_test", "y_test"],
+                inputs=["xgboost_model","X_train", "y_train","X_test","y_test"],
                 outputs=None,
                 name="evaluate_xgboost_model_node",
             ),

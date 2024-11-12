@@ -23,7 +23,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=evaluate_knn_model,
-                inputs=["knn_model", "X_test", "y_test"],
+                inputs=["knn_model", "X_train", "y_train","X_test","y_test"],
                 outputs=None,
                 name="evaluate_knn_model_node",
             ),

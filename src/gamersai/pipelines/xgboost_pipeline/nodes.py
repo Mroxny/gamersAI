@@ -24,13 +24,12 @@ def train_xgboost_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.Da
     model = XGBRegressor(objective=parameters["objective"], n_estimators=parameters["n_estimators"], learning_rate=parameters["learning_rate"], max_depth=parameters["max_depth"])
     
     model.fit(X_train, y_train)
-    wandb.sklearn.plot_learning_curve(model=model, X=X_train,y=y_train)
-    wandb.sklearn.plot_summary_metrics(model, X_train, y_train, X_test, y_test)
+    
     
     return model
 
 def evaluate_xgboost_model(
-    regressor: XGBRegressor, X_test: pd.DataFrame, y_test: pd.Series
+    regressor: XGBRegressor, X_train:pd.DataFrame,y_train:pd.Series, X_test: pd.DataFrame, y_test: pd.Series
 ):
     """Calculates and logs the coefficient of determination for the XGBoost model.
 
@@ -39,13 +38,22 @@ def evaluate_xgboost_model(
         X_test: Testing data of independent features.
         y_test: Testing data for the target.
     """
+    run = wandb.init(
+        # set the wandb project where this run will be logged
+        project="gamersAI",
+        name = "XGBoost",
+        # track hyperparameters and run metadata
+        config=regressor.get_params()
+    )
+    wandb.sklearn.plot_learning_curve(model=regressor, X=X_train,y=y_train)
+    wandb.sklearn.plot_summary_metrics(regressor, X_train, y_train, X_test, y_test)
     run = wandb.run
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
     logger = logging.getLogger(__name__)
     logger.info("XGBoost model has a coefficient R^2 of %.3f on test data.", score)
     to_log = {
-        "name" : "xgboost",
-        "score":score
-        }
+            "score":score
+              }
     run.log(to_log)
+    run.finish()

@@ -24,7 +24,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=evaluate_gradient_boosting_model,
-                inputs=["gradient_boosting_model", "X_test", "y_test"],
+                inputs=["gradient_boosting_model", "X_train", "y_train","X_test","y_test"],
                 outputs=None,
                 name="evaluate_gradient_boosting_model_node",
             ),
