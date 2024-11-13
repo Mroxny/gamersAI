@@ -45,7 +45,11 @@ def evaluate_gradient_boosting_model(
         config=regressor.get_params()
     )
     wandb.sklearn.plot_learning_curve(model=regressor, X=X_train,y=y_train)
-    wandb.sklearn.plot_summary_metrics(regressor, X_train, y_train, X_test, y_test)
+    #wandb.sklearn.plot_summary_metrics(regressor, X_train, y_train, X_test, y_test)
+    wandb.sklearn.plot_residuals(regressor,X_train,y_train)
+    df_seperated_X_numerical = X_train.select_dtypes(include=['number','boolean'])
+    df_seperated_X_numerical = X_train.replace({False: 0,True: 1})
+    wandb.sklearn.plot_outlier_candidates(regressor,df_seperated_X_numerical,y_train)
     run = wandb.run
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
