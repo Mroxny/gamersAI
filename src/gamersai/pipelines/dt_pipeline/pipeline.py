@@ -3,8 +3,8 @@ This is a boilerplate pipeline 'svr_pipeline'
 generated using Kedro 0.19.9
 """
 from kedro.pipeline import Pipeline, node, pipeline
-from .nodes import train_svr_model, evaluate_svr_model
-from ..data_science.nodes import split_data  
+from .nodes import train_tree_model, evaluate_tree_model
+from ..random_forest_pipeline.nodes import split_data  #..data_science.nodes
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
@@ -16,16 +16,16 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="split_data_node",
             ),
             node(
-                func=train_svr_model,
+                func=train_tree_model,
                 inputs=["X_train", "y_train","X_test","y_test","params:model_options"],
-                outputs="svr_model",
-                name="train_svr_model_node",
+                outputs="dt_model",
+                name="train_tree_model_node",
             ),
             node(
-                func=evaluate_svr_model,
-                inputs=["svr_model", "X_test", "y_test"],
+                func=evaluate_tree_model,
+                inputs=["dt_model", "X_train", "y_train","X_test","y_test"],
                 outputs=None,
-                name="evaluate_svr_model_node",
+                name="evaluate_tee_model_node",
             ),
         ]
     )

@@ -1,50 +1,51 @@
 """
-This is a boilerplate pipeline 'elasticnet_pipeline'
+This is a boilerplate pipeline 'svr_pipeline'
 generated using Kedro 0.19.9
 """
 import logging
 import pandas as pd
 import wandb
-from sklearn.linear_model import ElasticNet
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 import wandb.sklearn
 import os
 
-def train_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> ElasticNet:
-    """Trains an ElasticNet regression model.
+def train_tree_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> DecisionTreeRegressor:
+    """Trains a Support Vector Regressor (SVR) model.
 
     Args:
         X_train: Training data of independent features.
         y_train: Training data for the target.
 
     Returns:
-        Trained ElasticNet model.
+        Trained SVR model.
     """
-    #model = ElasticNet(alpha=1.0, l1_ratio=0.5, random_state=101)
-    model = ElasticNet(alpha=parameters["alpha"], l1_ratio=parameters["l1_ratio"], random_state=parameters["random_state_elasticnet"])
+    model = DecisionTreeRegressor(random_state=parameters["random_state_dt"]) #zmień parametry
+
     model.fit(X_train, y_train)
+
+    
     #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
     
     
     return model
 
-def evaluate_elasticnet_model(
-    regressor: ElasticNet, X_train:pd.DataFrame,y_train:pd.Series, X_test: pd.DataFrame, y_test: pd.Series
+def evaluate_tree_model(
+    regressor: DecisionTreeRegressor,X_train:pd.DataFrame,y_train:pd.Series, X_test: pd.DataFrame, y_test: pd.Series
 ):
-    """Calculates and logs the coefficient of determination for the ElasticNet model.
+    """Calculates and logs the coefficient of determination for the SVR model.
 
     Args:
-        regressor: Trained ElasticNet model.
+        regressor: Trained SVR model.
         X_test: Testing data of independent features.
         y_test: Testing data for the target.
     """
-    
     run = wandb.init(
         # set the wandb project where this run will be logged
         project="gamersAI",
-        name = "ElasticNet",
+        name = "DT",
         group=os.environ["WANDB_RUN_GROUP"],
         # track hyperparameters and run metadata
         config=regressor.get_params()
@@ -61,8 +62,7 @@ def evaluate_elasticnet_model(
     mse = mean_squared_error(y_test, y_pred)
     mae = mean_absolute_error(y_test, y_pred)
     logger = logging.getLogger(__name__)
-    logger.info(os.environ["WANDB_RUN_GROUP"])
-    logger.info("ElasticNet model has a coefficient R^2 of %.3f on test data.", score)
+    logger.info("DT model has a coefficient R^2 of %.3f on test data.", score)
     to_log = {
             "mse" : mse,
             "mae" : mae,

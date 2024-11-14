@@ -3,6 +3,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 
+
 class SparkHooks:
     @hook_impl
     def after_context_created(self, context) -> None:
@@ -22,3 +23,8 @@ class SparkHooks:
         )
         _spark_session = spark_session_conf.getOrCreate()
         _spark_session.sparkContext.setLogLevel("WARN")
+
+
+
+
+
