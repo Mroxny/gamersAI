@@ -3,25 +3,6 @@ from autogluon.tabular import TabularPredictor
 from sklearn.datasets import load_iris
 
 def preprocess_games(df: pd.DataFrame):
-    print('Start test autogluon')
-    iris = load_iris()
-    data = pd.DataFrame(iris.data, columns=iris.feature_names)
-    data['target'] = iris.target
-
-    # Podziel dane na dane treningowe i testowe
-    train_data = data.sample(frac=0.8, random_state=42)  # 80% jako treningowe
-    test_data = data.drop(train_data.index)              # 20% jako testowe
-
-    # Definiuj predyktor i trenuj model
-    predictor = TabularPredictor(label='target').fit(train_data)
-    # Przewiduj na danych testowych
-    predictions = predictor.predict(test_data)
-
-    # Wyświetl kilka przykładowych wyników
-    print("Przykładowe przewidywania:")
-    print(predictions.head())    
-    print('End test autogluon')
-
     # Ocena wyników
     performance = predictor.evaluate(test_data)
     print("Ocena modelu:", performance)
