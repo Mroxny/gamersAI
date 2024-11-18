@@ -1,8 +1,8 @@
 import pandas as pd
-
+from autogluon.tabular import TabularPredictor
+from sklearn.datasets import load_iris
 
 def preprocess_games(df: pd.DataFrame):
-
     df[['Genre 1', 'Genre 2']] = df['Genres'].str.split(',', n=2, expand=True)[[0, 1]]
     df['Genre 1'] = df['Genre 1'].str.strip()
     df['Genre 2'] = df['Genre 2'].str.strip()
