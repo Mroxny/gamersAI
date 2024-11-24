@@ -15,6 +15,8 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 import wandb.sklearn
 import os
+import matplotlib.pyplot as plt
+from sklearn.model_selection import cross_val_score, KFold
 
 
 def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
@@ -94,5 +96,54 @@ def evaluate_model(
               }
     run.log(to_log)
     run.finish()
-    
+
+def cross_validate_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict):
+    """
+    Performs cross-validation for the RandomForestRegressor and logs the R² scores to WandB.
+
+    Args:
+        X_train: Training data of independent features.
+        y_train: Training data for the target.
+        parameters: Hyperparameters for the RandomForestRegressor.
+    """
+    # Define the Random Forest model
+    model = RandomForestRegressor(
+        n_estimators=parameters["n_estimators"],
+        max_depth=parameters.get("max_depth"),
+        random_state=parameters["random_state"]
+    )
+
+    # Initialize WandB
+    run = wandb.init(
+        project="gamersAI",
+        name="RF_CrossValidation",
+        group=os.environ.get("WANDB_RUN_GROUP"),
+        config=model.get_params()
+    )
+
+    # Perform 5-fold cross-validation
+    kf = KFold(n_splits=5, shuffle=True, random_state=101)
+    cv_scores = cross_val_score(model, X_train, y_train, cv=kf, scoring="r2")
+
+    # Log R² scores chart
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(1, len(cv_scores) + 1), cv_scores, marker='o', linestyle='-', color='b')
+    plt.title("RandomForest Cross-Validation R² Scores")
+    plt.xlabel("Fold")
+    plt.ylabel("R² Score")
+    plt.grid()
+    plt.xticks(range(1, len(cv_scores) + 1))
+    plt.ylim(-0.1, 1.1) 
+
+    # Log the plot to WandB
+    wandb.log({"R² Scores Plot": wandb.Image(plt)})
+    plt.close()
+
+    # Log the results to the console
+    logger = logging.getLogger(__name__)
+    logger.info("RandomForest Cross-validation R² scores: %s", cv_scores)
+    logger.info("RandomForest Mean R² score: %.3f", cv_scores.mean())
+
+    run.finish()
+
    

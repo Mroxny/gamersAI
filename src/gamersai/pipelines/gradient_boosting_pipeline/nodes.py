@@ -7,6 +7,8 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 import wandb.sklearn
 import os
+from sklearn.model_selection import KFold, cross_val_score
+import matplotlib.pyplot as plt
 
 def train_gradient_boosting_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> GradientBoostingRegressor:
     """Trains a Gradient Boosting Regressor model.
@@ -63,4 +65,55 @@ def evaluate_gradient_boosting_model(
             "R2 score":score
               }
     run.log(to_log)
+    run.finish()
+
+def cross_validate_gradient_boosting_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict):
+    """
+    Performs cross-validation for the Gradient Boosting Regressor and logs detailed information to WandB.
+
+    Args:
+        X_train: Training data of independent features.
+        y_train: Training data for the target.
+        parameters: Hyperparameters for the Gradient Boosting Regressor.
+    """
+    # Define the model
+    model = GradientBoostingRegressor(
+        n_estimators=parameters["n_estimators_boosting"],
+        learning_rate=parameters["learning_rate_boosting"],
+        max_depth=parameters["max_depth_boosting"],
+        random_state=parameters["random_state_boosting"]
+    )
+
+    # Initialize WandB
+    run = wandb.init(
+        project="gamersAI",
+        name="GB_CrossValidation",
+        group=os.environ.get("WANDB_RUN_GROUP"),
+        config=model.get_params()
+    )
+
+    # Set up cross-validation IDK CZY NIE TRZEBA W PARAMETRY TUTAJ TEGO WRZUCIC
+    kf = KFold(n_splits=5, shuffle=True, random_state=101)
+    cv_scores = cross_val_score(model, X_train, y_train, cv=kf, scoring="r2")
+
+    # Plot for R2 scores
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(1, len(cv_scores) + 1), cv_scores, marker='o', linestyle='-', color='b')
+    plt.title("Cross-Validation R2 Scores")
+    plt.xlabel("Fold")
+    plt.ylabel("R2 Score")
+    plt.grid()
+    plt.xticks(range(1, len(cv_scores) + 1))
+    plt.ylim(-0.1, 1.1)
+
+    # Log the plot to WandB
+    wandb.log({"R2 Scores Plot": wandb.Image(plt)})
+    plt.close()
+
+    # Log R2 scores as metrics
+    logger = logging.getLogger(__name__)
+    logger.info("Cross-validation R2 scores: %s", cv_scores)
+    logger.info("Mean R2 score: %.3f", cv_scores.mean())
+
+    # Finish WandB run
     run.finish()
