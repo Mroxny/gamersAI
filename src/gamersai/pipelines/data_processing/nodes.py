@@ -1,6 +1,10 @@
 import pandas as pd
 from autogluon.tabular import TabularPredictor
 from sklearn.datasets import load_iris
+import seaborn as sns
+import matplotlib.pyplot as plt
+import wandb
+import os
 
 def preprocess_games(df: pd.DataFrame):
     df[['Genre 1', 'Genre 2']] = df['Genres'].str.split(',', n=2, expand=True)[[0, 1]]
@@ -59,3 +63,39 @@ def convert_estimated_owners(owners_range):
 
 def create_model_input_table(games: pd.DataFrame) -> pd.DataFrame:
     return games
+
+def log_heatmap_to_wandb(df: pd.DataFrame):
+    """
+    Creates a heatmap from a DataFrame, logs it to Weights & Biases (WandB), and sends it for visualization.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to visualize as a heatmap.
+    """
+    # Initialize the WandB run
+    run = wandb.init(
+        project="gamersAI",
+        name="Heatmap_Logging",
+        group=os.environ.get("WANDB_RUN_GROUP"),
+        config={} 
+    )
+
+    # Create a correlation heatmap
+    plt.figure(figsize=(15, 12))
+    sns.heatmap(df.corr(), annot=True, fmt=".2f", cmap="viridis", cbar=True)
+    plt.title("Correlation Heatmap")
+
+    # Log the heatmap
+    wandb.log({"heatmap": wandb.Image(plt)})
+    plt.close()
+
+    # Additional metadata
+    to_log = {
+        "columns_logged": list(df.columns),
+        "num_rows": df.shape[0],
+        "num_columns": df.shape[1],
+    }
+    run.log(to_log)
+
+    # Finish the WandB run
+    run.finish()
+    print("Heatmap and metadata logged to WandB.")
