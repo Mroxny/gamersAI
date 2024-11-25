@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score, KFold
 
 
-def train_xgboost_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> XGBRegressor:
+def train_xgboost_model(int_6: int,X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> XGBRegressor:
     """Trains the XGBoost regression model.
 
     Args:
@@ -72,6 +72,7 @@ def evaluate_xgboost_model(
               }
     run.log(to_log)
     run.finish()
+    
 
 def cross_validate_xgboost_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict):
     """

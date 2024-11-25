@@ -70,3 +70,4 @@ def evaluate_tree_model(
               }
     run.log(to_log)
     run.finish()
+    return 1

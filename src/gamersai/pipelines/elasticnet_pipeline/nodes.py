@@ -14,7 +14,7 @@ import os
 from sklearn.model_selection import cross_val_score, KFold
 import matplotlib.pyplot as plt
 
-def train_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> ElasticNet:
+def train_elasticnet_model(int_1: int ,X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> ElasticNet:
     """Trains an ElasticNet regression model.
 
     Args:
@@ -72,6 +72,7 @@ def evaluate_elasticnet_model(
               }
     run.log(to_log)
     run.finish()
+    return 1
 
 def cross_validate_elasticnet_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict):
     """

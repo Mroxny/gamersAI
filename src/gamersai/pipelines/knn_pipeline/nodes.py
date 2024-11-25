@@ -14,7 +14,7 @@ import os
 from sklearn.model_selection import cross_val_score, KFold
 import matplotlib.pyplot as plt
 
-def train_knn_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> KNeighborsRegressor:
+def train_knn_model(int_3: int, X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> KNeighborsRegressor:
     """Trains a K-Nearest Neighbors Regressor model.
 
     Args:
@@ -71,6 +71,7 @@ def evaluate_knn_model(
               }
     run.log(to_log)
     run.finish()
+    return 1
 
 def cross_validate_knn_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict):
     """

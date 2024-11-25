@@ -21,39 +21,44 @@ def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
 
     return X, y
 
-def train_autogluon(X_train: pd.DataFrame, y_train: pd.Series, time_limit: int):
+def train_autogluon(int_4: int,X_train: pd.DataFrame, y_train: pd.Series, time_limit: int):
     training_data = pd.concat([X_train, y_train], axis=1)
     predictor = TabularPredictor(label=y_train.name).fit(training_data, time_limit=time_limit)
     return predictor
 
-def evaluate_model(predictor: TabularPredictor, X_test: pd.DataFrame, y_test: pd.Series):
+def evaluate_model_autogluon(predictor: TabularPredictor, X_test: pd.DataFrame, y_test: pd.Series):
     """Evaluate the AutoGluon model."""
 
     run = wandb.init(
         # set the wandb project where this run will be logged
         project="gamersAI",
-        name = "DT",
+        name = "Autogluon",
         group=os.environ["WANDB_RUN_GROUP"],
     )
-    wandb.sklearn.plot_learning_curve(model=predictor, X=X_test,y=y_test)
-    #wandb.sklearn.plot_summary_metrics(predictor, X_test, y_test, X_test, y_test)
-    wandb.sklearn.plot_residuals(predictor,X_test,y_test)
-    df_seperated_X_numerical = X_test.select_dtypes(include=['number','boolean'])
-    df_seperated_X_numerical = X_test.replace({False: 0,True: 1})
-    wandb.sklearn.plot_outlier_candidates(predictor,df_seperated_X_numerical,y_test)
-    run = wandb.run
-    y_pred = predictor.predict(X_test)
-    performance = predictor.evaluate_predictions(y_true=y_test, y_pred=y_pred, auxiliary_metrics=True)
+    training_data = pd.concat([X_test, y_test], axis=1)
+    dictionary = predictor.evaluate(training_data)
+    importances = predictor.feature_importance(training_data)
+    leaderboardDiktionary = predictor.leaderboard(training_data)
 
-    score = r2_score(y_test, y_pred)
-    mse = mean_squared_error(y_test, y_pred)
-    mae = mean_absolute_error(y_test, y_pred)
+    
+    run = wandb.run
     logger = logging.getLogger(__name__)
-    logger.info("DT model has a coefficient R^2 of %.3f on test data.", score)
-    to_log = {
-            "mse" : mse,
-            "mae" : mae,
-            "R2 score":score
-              }
-    run.log(to_log)
+
+    #logger.info(dictionary)
+    #logger.info(leaderboardDiktionary)
+    #logger.info(leaderboardDiktionary.columns)
+    #logger.info(importances.columns)
+
+    table_leaderboard = wandb.Table(columns=["model", "score_test", "score_val", "eval_metric"])
+    for index, row in leaderboardDiktionary.iterrows():
+        table_leaderboard.add_data(row['model'], row['score_test'], row['score_val'], row['eval_metric'])
+
+    table_importances = wandb.Table(columns=["feature", "importance", "stddev", "p_value", "n", "p99_high", "p99_low"])
+    for index, row in importances.iterrows():
+        table_importances.add_data(index, row['importance'], row['stddev'], row['p_value'], 
+                               row['n'], row['p99_high'], row['p99_low'])
+    
+    wandb.log({"leaderboard": table_leaderboard})
+    wandb.log({"importances": table_importances})
     run.finish()
+    return 1

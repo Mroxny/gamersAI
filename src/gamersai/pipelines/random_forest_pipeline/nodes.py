@@ -38,7 +38,7 @@ def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
     return X_train, X_test, y_train, y_test
 
 
-def train_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series) -> RandomForestRegressor:
+def train_model(int_5: int,X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series) -> RandomForestRegressor:
     """Trains the linear regression model.
 
     Args:
@@ -96,6 +96,7 @@ def evaluate_model(
               }
     run.log(to_log)
     run.finish()
+    return 1
 
 def cross_validate_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict):
     """

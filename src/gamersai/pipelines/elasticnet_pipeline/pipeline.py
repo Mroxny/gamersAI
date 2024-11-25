@@ -5,6 +5,7 @@ generated using Kedro 0.19.9
 from kedro.pipeline import Pipeline, node, pipeline
 from .nodes import train_elasticnet_model, evaluate_elasticnet_model, cross_validate_elasticnet_model
 from ..random_forest_pipeline.nodes import split_data 
+from ..dt_pipeline.nodes import evaluate_tree_model 
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
@@ -16,6 +17,12 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="split_data_node",
             ),
             node(
+                func=evaluate_tree_model,
+                inputs=["dt_model", "X_train", "y_train","X_test","y_test"],
+                outputs="int_1",
+                name="evaluate_tree_model_node",
+            ),
+            node(
                 func=cross_validate_elasticnet_model,
                 inputs=["X_train", "y_train", "params:model_options"],
                 outputs=None,
@@ -23,14 +30,14 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_elasticnet_model,
-                inputs=["X_train", "y_train", "X_test", "y_test", "params:model_options"],
+                inputs=["int_1", "X_train", "y_train", "X_test", "y_test", "params:model_options"],
                 outputs="elasticnet_model",
                 name="train_elasticnet_model_node",
             ),
             node(
                 func=evaluate_elasticnet_model,
                 inputs=["elasticnet_model", "X_train", "y_train", "X_test", "y_test"],
-                outputs=None,
+                outputs="int_2",
                 name="evaluate_elasticnet_model_node",
             ),
         ]

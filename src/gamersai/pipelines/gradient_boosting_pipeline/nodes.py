@@ -10,7 +10,7 @@ import os
 from sklearn.model_selection import KFold, cross_val_score
 import matplotlib.pyplot as plt
 
-def train_gradient_boosting_model(X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> GradientBoostingRegressor:
+def train_gradient_boosting_model(int_2: int, X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series, parameters: dict) -> GradientBoostingRegressor:
     """Trains a Gradient Boosting Regressor model.
 
     Args:
@@ -66,6 +66,7 @@ def evaluate_gradient_boosting_model(
               }
     run.log(to_log)
     run.finish()
+    return 1
 
 def cross_validate_gradient_boosting_model(X_train: pd.DataFrame, y_train: pd.Series, parameters: dict):
     """
