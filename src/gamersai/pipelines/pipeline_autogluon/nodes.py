@@ -22,6 +22,12 @@ def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
     return X, y
 
 def train_autogluon(int_4: int,X_train: pd.DataFrame, y_train: pd.Series, time_limit: int):
+    run = wandb.init(
+        # set the wandb project where this run will be logged
+        project="gamersAI",
+        name = "Autogluon",
+        group=os.environ["WANDB_RUN_GROUP"],
+    )
     training_data = pd.concat([X_train, y_train], axis=1)
     predictor = TabularPredictor(label=y_train.name).fit(training_data, time_limit=time_limit)
     return predictor
@@ -29,12 +35,7 @@ def train_autogluon(int_4: int,X_train: pd.DataFrame, y_train: pd.Series, time_l
 def evaluate_model_autogluon(predictor: TabularPredictor, X_test: pd.DataFrame, y_test: pd.Series):
     """Evaluate the AutoGluon model."""
 
-    run = wandb.init(
-        # set the wandb project where this run will be logged
-        project="gamersAI",
-        name = "Autogluon",
-        group=os.environ["WANDB_RUN_GROUP"],
-    )
+    
     training_data = pd.concat([X_test, y_test], axis=1)
     dictionary = predictor.evaluate(training_data)
     importances = predictor.feature_importance(training_data)

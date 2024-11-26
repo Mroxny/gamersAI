@@ -29,7 +29,14 @@ def train_knn_model(int_3: int, X_train: pd.DataFrame, y_train: pd.Series, X_tes
     model.fit(X_train, y_train)
     
     #wandb.sklearn.plot_regressor(model=model, X_train=X_train, X_test=X_test,y_train=y_train,y_test=y_test)
-    
+    run = wandb.init(
+        # set the wandb project where this run will be logged
+        project="gamersAI",
+        name = "KNN",
+        group=os.environ["WANDB_RUN_GROUP"],
+        # track hyperparameters and run metadata
+        config=model.get_params()
+    )
     
     return model
 
@@ -43,14 +50,7 @@ def evaluate_knn_model(
         X_test: Testing data of independent features.
         y_test: Testing data for the target.
     """
-    run = wandb.init(
-        # set the wandb project where this run will be logged
-        project="gamersAI",
-        name = "KNN",
-        group=os.environ["WANDB_RUN_GROUP"],
-        # track hyperparameters and run metadata
-        config=regressor.get_params()
-    )
+    
     wandb.sklearn.plot_learning_curve(model=regressor, X=X_train,y=y_train)
     #wandb.sklearn.plot_summary_metrics(regressor, X_train, y_train, X_test, y_test)
     wandb.sklearn.plot_residuals(regressor,X_train,y_train)
