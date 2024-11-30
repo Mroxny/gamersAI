@@ -1,5 +1,5 @@
 games:
-  type: kedro_datasets.pandas.SQLTableDataset
+  type: pandas.SQLTableDataset
   credentials: db_credentials
   table_name: games
 
