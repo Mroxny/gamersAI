@@ -1,6 +1,7 @@
 games:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/games.csv
+  type: kedro_datasets.pandas.SQLTableDataset
+  credentials: db_credentials
+  table_name: games
 
 preprocessed_games:
   type: pandas.ParquetDataset
