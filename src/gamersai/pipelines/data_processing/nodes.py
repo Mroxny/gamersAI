@@ -7,6 +7,9 @@ import wandb
 import os
 
 def preprocess_games(df: pd.DataFrame):
+
+    df = df.replace({"True": True, "False": False})
+    df.update(df.apply(pd.to_numeric, errors='coerce'))
     df[['Genre 1', 'Genre 2']] = df['Genres'].str.split(',', n=2, expand=True)[[0, 1]]
     df['Genre 1'] = df['Genre 1'].str.strip()
     df['Genre 2'] = df['Genre 2'].str.strip()
