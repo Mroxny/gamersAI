@@ -24,8 +24,8 @@ def create_pipeline(**kwargs) -> Pipeline:
             node(
                 func=evaluate_tree_model,
                 inputs=["dt_model", "X_train", "y_train","X_test","y_test"],
-                outputs=None,
-                name="evaluate_tee_model_node",
+                outputs="int_1",
+                name="evaluate_tree_model_node",
             ),
         ]
     )
