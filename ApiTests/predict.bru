@@ -1,0 +1,36 @@
+meta {
+  name: predict
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://127.0.0.1:8000/predict-estimated-owners
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "Peak_CCU": 1,
+      "Required_age": 1,
+      "Price": 1.12,
+      "DLC_count": 1,
+      "Windows": 1,
+      "Mac": 1,
+      "Linux": 1,
+      "Metacritic_score": 1,
+      "Positive": 0,
+      "Negative": 0,
+      "Achievements": 0,
+      "Recommendations": 0,
+      "Median_playtime_forever": 0,
+      "Is_English": 0,
+      "Is_Spanish": 0,
+      "Is_German": 0,
+      "Is_French": 0,
+      "Is_Single_player": 0,
+      "Is_Multi_player": 0,
+      "Genre_1_encoded": 0
+  }
+}
