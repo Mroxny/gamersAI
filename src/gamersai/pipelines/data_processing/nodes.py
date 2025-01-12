@@ -57,7 +57,7 @@ def preprocess_games(df: pd.DataFrame):
     df.drop(axis='columns', columns='Genre 1', inplace=True)
 
     df = df.nsmallest(81543, keep='first', columns='Estimated owners (avg)')
-
+    df.to_csv('output.csv', index=False)
     return df
 
 def convert_estimated_owners(owners_range):

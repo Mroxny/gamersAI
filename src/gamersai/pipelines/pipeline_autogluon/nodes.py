@@ -30,7 +30,7 @@ def train_autogluon(X_train: pd.DataFrame, y_train: pd.Series, time_limit: int):
     )
     training_data = pd.concat([X_train, y_train], axis=1)
     predictor = TabularPredictor(label=y_train.name).fit(training_data, time_limit=time_limit)
-    predictor.delete_models(models_to_keep="best")
+    predictor.delete_models(models_to_keep="best", dry_run=False)
     return predictor
 
 def evaluate_model_autogluon(predictor: TabularPredictor, X_test: pd.DataFrame, y_test: pd.Series):
