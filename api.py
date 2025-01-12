@@ -1,7 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 import pickle
 import pandas as pd
+import db_controller as dbc
+from dtos import GameDTO
 
 model_path = "api_model\model.pkl" 
 with open(model_path, "rb") as file:
@@ -78,4 +80,28 @@ def predict_estimated_owners(features: GameFeatures):
         return {"Estimated owners (avg)": response}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Prediction failed: {e}")
+    
+@app.get("/game/{name}")
+async def get_game(name: str):
+    game = dbc.get_game_by_name(name)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
+    return dict(zip(GameDTO.model_fields.keys(), game[1:]))
+
+@app.get("/games/")
+async def get_all_games(per_page: int = Query(10, gt=0), page: int = Query(1, gt=0)):
+    """Get all games with pagination."""
+    offset = (page - 1) * per_page
+    games = dbc.get_all_games(per_page, offset)
+    return [dict(zip(GameDTO.model_fields.keys(), game[1:])) for game in games]
+
+
+@app.post("/games/")
+async def add_game(game: GameDTO):
+    """Add a new game feature."""
+    try:
+        dbc.add_game(game)
+        return {"message": "Feature added successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
