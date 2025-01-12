@@ -23,21 +23,15 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="cross_validate_model_node",
             ),
             node(
-                func=evaluate_model_autogluon,
-                inputs=["autogluon_model", "X", "y"],
-                outputs= "int_5",
-                name="evaluate_autogluon_model_node",
-            ),
-            node(
                 func=train_model,
-                inputs=["int_5","X_train", "y_train", "X_test", "y_test"],
+                inputs=["X_train", "y_train", "X_test", "y_test"],
                 outputs="trained_model",
                 name="train_model_node",
             ),
             node(
                 func=evaluate_model,
                 inputs=["trained_model", "X_train", "y_train", "X_test", "y_test"],
-                outputs="int_6",
+                outputs=None,
                 name="evaluate_model_node",
             ),
         ]
