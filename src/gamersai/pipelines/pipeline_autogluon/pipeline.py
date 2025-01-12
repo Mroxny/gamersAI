@@ -18,21 +18,15 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="split_autogluon_data_node",
             ),
             node(
-                func=evaluate_knn_model,
-                inputs=["knn_model", "X_train", "y_train", "X_test", "y_test"],
-                outputs="int_4",
-                name="evaluate_knn_model_node",
-            ),
-            node(
                 func=train_autogluon,
-                inputs=["int_4", "X", "y", "params:time_limit"],
+                inputs=["X", "y", "params:time_limit"],
                 outputs="autogluon_model",
                 name="train_autogluon_node",
             ),
             node(
                 func=evaluate_model_autogluon,
                 inputs=["autogluon_model", "X", "y"],
-                outputs= "int_5",
+                outputs= None,
                 name="evaluate_autogluon_model_node",
             ),
         ]

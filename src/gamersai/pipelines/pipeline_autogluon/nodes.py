@@ -21,7 +21,7 @@ def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
 
     return X, y
 
-def train_autogluon(int_4: int,X_train: pd.DataFrame, y_train: pd.Series, time_limit: int):
+def train_autogluon(X_train: pd.DataFrame, y_train: pd.Series, time_limit: int):
     run = wandb.init(
         # set the wandb project where this run will be logged
         project="gamersAI",
@@ -30,6 +30,7 @@ def train_autogluon(int_4: int,X_train: pd.DataFrame, y_train: pd.Series, time_l
     )
     training_data = pd.concat([X_train, y_train], axis=1)
     predictor = TabularPredictor(label=y_train.name).fit(training_data, time_limit=time_limit)
+    predictor.delete_models(models_to_keep="best")
     return predictor
 
 def evaluate_model_autogluon(predictor: TabularPredictor, X_test: pd.DataFrame, y_test: pd.Series):
@@ -62,4 +63,3 @@ def evaluate_model_autogluon(predictor: TabularPredictor, X_test: pd.DataFrame, 
     wandb.log({"leaderboard": table_leaderboard})
     wandb.log({"importances": table_importances})
     run.finish()
-    return 1
