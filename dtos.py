@@ -1,0 +1,42 @@
+from pydantic import BaseModel
+
+
+class GameDTO(BaseModel):
+    Name: str
+    Release_date: str
+    Estimated_owners: str
+    Peak_CCU: int
+    Required_age: int
+    Price: float
+    DLC_count: int
+    About_the_game: str
+    Supported_languages: str
+    Full_audio_languages: str
+    Reviews: str
+    Header_image: str
+    Website: str
+    Support_url: str
+    Support_email: str
+    Windows: int
+    Mac: int
+    Linux: int
+    Metacritic_score: float
+    Metacritic_url: str
+    User_score: float
+    Positive: int
+    Negative: int
+    Score_rank: int
+    Achievements: int
+    Recommendations: int
+    Notes: str
+    Average_playtime_forever: int
+    Average_playtime_two_weeks: int
+    Median_playtime_forever: int
+    Median_playtime_two_weeks: int
+    Developers: str
+    Publishers: str
+    Categories: str
+    Genres: str
+    Tags: str
+    Screenshots: str
+    Movies: str
