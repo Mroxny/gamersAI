@@ -10,16 +10,41 @@ DB_PATH = "data/01_raw/games.db"
 def get_db_connection():
     return sqlite3.connect(DB_PATH)
 
-def get_game_by_name(name: str):
+def get_game_by_name(name: str, limit: int, offset: int):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = """
-        SELECT * FROM games WHERE name = ?;
+        SELECT * FROM games WHERE name LIKE ? LIMIT ? OFFSET ?;
         """
-    cursor.execute(query, (name,))
+    param = f"%{name}%"
+    cursor.execute(query, (param, limit, offset))
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+def get_game_by_name_total_count(name: str):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+        SELECT COUNT(*) FROM games WHERE name LIKE ?;
+        """
+    param = f"%{name}%"
+    cursor.execute(query, (param,))
     result = cursor.fetchone()
     conn.close()
     return result
+
+def get_total_count_games () :
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+        SELECT COUNT(*) FROM games;
+        """
+    cursor.execute(query)
+    result = cursor.fetchone()
+    conn.close()
+    return result
+
 
 def get_all_games(limit: int, offset: int):
     conn = get_db_connection()
@@ -37,13 +62,13 @@ def add_game(game: dtos.GameDTO):
     cursor = conn.cursor()
     query = """
         INSERT INTO games (
-            Name, Release date, Estimated owners, Peak CCU, Required age, Price, DLC count,
-            About the game, Supported languages, Full audio languages, Reviews, Header image,
-            Website, Support url, Support email, Windows, Mac, Linux, Metacritic score, Metacritic url,
-            User score, Positive, Negative, Score rank, Achievements, Recommendations, Notes,
-            Average playtime forever, Average playtime two weeks, Median playtime forever, Median playtime two weeks,
-            Developers, Publishers, Categories, Genres, Tags, Screenshots, Movies
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            "Name", "Release date", "Estimated owners", "Peak CCU", "Required age", "Price", "DLC count",
+            "About the game", "Supported languages", "Full audio languages", "Reviews", "Header image",
+            "Website", "Support url", "Support email", "Windows", "Mac", "Linux", "Metacritic score", "Metacritic url",
+            "User score", "Positive", "Negative", "Score rank", "Achievements", "Recommendations", "Notes",
+            "Average playtime forever", "Average playtime two weeks", "Median playtime forever", "Median playtime two weeks",
+            "Developers", "Publishers", "Categories", "Genres", "Tags", "Screenshots", "Movies"
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """
     cursor.execute(query,(
                 game.Name, game.Release_date, game.Estimated_owners, game.Peak_CCU, game.Required_age,
@@ -57,3 +82,5 @@ def add_game(game: dtos.GameDTO):
             ))
     conn.commit()
     conn.close()
+
+    #TODO DODANE ZOSTAŁY "aaaa" i "Example Game" w celu sprawdzenia czy dodawanie działa, należy usunąć
