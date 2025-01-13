@@ -4,6 +4,7 @@ import pickle
 import pandas as pd
 import db_controller as dbc
 from dtos import GameDTO
+import traceback
 
 model_path = "api_model\model.pkl" 
 with open(model_path, "rb") as file:
@@ -36,7 +37,7 @@ app = FastAPI()
 @app.post("/predict-estimated-owners")
 def predict_estimated_owners(features: GameFeatures):
 
-    input_data = pd.DataFrame([features.model_dump()])
+    input_data = pd.DataFrame([features.model_dump(mode='json')])
 
     expected_columns = [
         "Peak CCU", "Required age", "Price", "DLC count", "Windows", "Mac",
@@ -79,14 +80,16 @@ def predict_estimated_owners(features: GameFeatures):
         response = response_mapping.get(predicted_value, "Unknown prediction value")
         return {"Estimated owners (avg)": response}
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=400, detail=f"Prediction failed: {e}")
     
 @app.get("/game/{name}")
-async def get_game(name: str):
-    game = dbc.get_game_by_name(name)
-    if not game:
+async def get_game(name: str, per_page: int = Query(10, gt=0), page: int = Query(1, gt=0)):    
+    offset = (page - 1) * per_page
+    games = dbc.get_game_by_name(name,per_page, offset)
+    if not games:
         raise HTTPException(status_code=404, detail="Game not found")
-    return dict(zip(GameDTO.model_fields.keys(), game[1:]))
+    return [dict(zip(GameDTO.model_fields.keys(), game[1:])) for game in games]
 
 @app.get("/games/")
 async def get_all_games(per_page: int = Query(10, gt=0), page: int = Query(1, gt=0)):
@@ -95,6 +98,16 @@ async def get_all_games(per_page: int = Query(10, gt=0), page: int = Query(1, gt
     games = dbc.get_all_games(per_page, offset)
     return [dict(zip(GameDTO.model_fields.keys(), game[1:])) for game in games]
 
+@app.get("/games/totalCount")
+async def get_total_count_games_async ():
+    total_count = dbc.get_total_count_games()
+    return {"count" :total_count[0]}
+
+@app.get("/game/{name}/totalCount")
+async def get_game(name: str):
+    total_count = dbc.get_game_by_name_total_count(name)
+    print(total_count)
+    return {"count" :total_count[0]}
 
 @app.post("/games/")
 async def add_game(game: GameDTO):
@@ -103,5 +116,6 @@ async def add_game(game: GameDTO):
         dbc.add_game(game)
         return {"message": "Feature added successfully"}
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(e))
 

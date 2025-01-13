@@ -5,7 +5,6 @@ generated using Kedro 0.19.9
 from kedro.pipeline import Pipeline, node, pipeline
 from .nodes import train_xgboost_model, evaluate_xgboost_model, cross_validate_xgboost_model
 from ..random_forest_pipeline.nodes import split_data
-from ..random_forest_pipeline.nodes import evaluate_model
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
@@ -23,14 +22,8 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="cross_validate_xgboost_model_node",
             ),
             node(
-                func=evaluate_model,
-                inputs=["trained_model", "X_train", "y_train", "X_test", "y_test"],
-                outputs="int_6",
-                name="evaluate_model_node",
-            ),
-            node(
                 func=train_xgboost_model,
-                inputs=["int_6", "X_train", "y_train", "X_test", "y_test", "params:model_options"],
+                inputs=["X_train", "y_train", "X_test", "y_test", "params:model_options"],
                 outputs="xgboost_model",
                 name="train_xgboost_model_node",
             ),
