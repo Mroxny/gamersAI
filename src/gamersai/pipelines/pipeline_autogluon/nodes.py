@@ -7,6 +7,7 @@ import logging
 import pandas as pd
 import wandb
 import wandb.sklearn
+import shutil
 
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
@@ -14,6 +15,18 @@ from sklearn.metrics import mean_squared_error
 
 from typing import Tuple
 from autogluon.tabular import TabularPredictor
+
+def delete_autogluon_models(path="AutogluonModels"):
+    if os.path.exists(path):
+        for folder_name in os.listdir(path):
+            folder_path = os.path.join(path, folder_name)
+            if os.path.isdir(folder_path):
+                shutil.rmtree(folder_path)
+            elif os.path.isfile(folder_path):
+                os.remove(folder_path)
+        print(f"All files and folders in '{path}' have been deleted.")
+    else:
+        print(f"Path '{path}' does not exist.")
 
 def split_data(data: pd.DataFrame, parameters: dict) -> Tuple:
     X = data.drop(parameters["features"], axis='columns')
@@ -28,6 +41,9 @@ def train_autogluon(X_train: pd.DataFrame, y_train: pd.Series, time_limit: int):
         name = "Autogluon",
         group=os.environ["WANDB_RUN_GROUP"],
     )
+
+    delete_autogluon_models()
+
     training_data = pd.concat([X_train, y_train], axis=1)
     predictor = TabularPredictor(label=y_train.name).fit(training_data, time_limit=time_limit)
     predictor.delete_models(models_to_keep="best", dry_run=False)

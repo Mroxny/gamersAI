@@ -3,6 +3,15 @@ import requests
 import dtos
 import json
 
+from kedro.framework.session import KedroSession
+from kedro.framework.startup import bootstrap_project
+from pathlib import Path
+
+def load_kedro_session():
+    bootstrap_project(Path.cwd())
+    session = KedroSession.create()
+    return session
+
 def display_pagination_horizontal(total_pages):
     page_input = st.text_input("To Page", str(st.session_state.current_page))
     if page_input.isdigit():
@@ -134,7 +143,7 @@ def main():
     st.title("Game API Interface")
     st.markdown("Select an option below to interact with the API.")
 
-    option = st.selectbox("Choose an option", ["Predict Estimated Owners", "Get Game by Name", "Get All Games", "Add Game"])
+    option = st.selectbox("Choose an option", ["Predict Estimated Owners", "Get Game by Name", "Get All Games", "Add Game", "Retrain model"])
 
     if option == "Predict Estimated Owners":
         st.subheader("Predict Estimated Owners")
@@ -359,6 +368,16 @@ def main():
                 print (e)
                 st.error(f"Request failed: {e}")
 
+    elif option == "Retrain model":
+        if st.button("Retrain models"):
+            with st.spinner("Retraining..."):
+                try:
+                    session = load_kedro_session()
+                    session.run(pipeline_name="pipeline_autogluon")
+                    st.success("Retraining completed successfully!")
+                except Exception as e:
+                    st.error(f"An error occurred during retraining: {e}")
+
+
 if __name__ == "__main__":
     main()
-

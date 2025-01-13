@@ -5,10 +5,27 @@ import pandas as pd
 import db_controller as dbc
 from dtos import GameDTO
 import traceback
+import os
 
-model_path = "api_model\model.pkl" 
-with open(model_path, "rb") as file:
-    model = pickle.load(file)
+def find_model_by_prefix(path="AutogluonModels", prefix="ag"):
+    if os.path.exists(path):
+        for folder_name in os.listdir(path):
+            # Check if folder starts with the prefix and is a directory
+            folder_path = os.path.join(path, folder_name)
+            if folder_name.startswith(prefix) and os.path.isdir(folder_path):
+                # Construct the full path to the target file
+                model_file_path = os.path.join(folder_path, "models", "WeightedEnsemble_L2", "model.pkl")
+                if os.path.exists(model_file_path):
+                    print(f"Model file found: {model_file_path}")
+                    return model_file_path
+                else:
+                    print(f"'model.pkl' not found in {os.path.join(folder_path, 'models', 'WeightedEnsemble_L2')}")
+                    return None
+        print(f"No folder with prefix '{prefix}' found in '{path}'.")
+    else:
+        print(f"Path '{path}' does not exist.")
+    return None
+
 
 class GameFeatures(BaseModel):
     Peak_CCU: int
@@ -36,6 +53,9 @@ app = FastAPI()
 
 @app.post("/predict-estimated-owners")
 def predict_estimated_owners(features: GameFeatures):
+    model_path = find_model_by_prefix()
+    with open(model_path, "rb") as file:
+        model = pickle.load(file)
 
     input_data = pd.DataFrame([features.model_dump(mode='json')])
 
