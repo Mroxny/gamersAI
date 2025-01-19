@@ -83,4 +83,13 @@ def add_game(game: dtos.GameDTO):
     conn.commit()
     conn.close()
 
+def delete_game_by_name(name: str):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+        DELETE FROM games WHERE name = ?;
+        """
+    cursor.execute(query, (name,))
+    conn.commit()
+    conn.close()
     #TODO DODANE ZOSTAŁY "aaaa" i "Example Game" w celu sprawdzenia czy dodawanie działa, należy usunąć
