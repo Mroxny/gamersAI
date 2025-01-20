@@ -2,116 +2,103 @@
 
 [![Powered by Kedro](https://img.shields.io/badge/powered_by-kedro-ffc900?logo=kedro)](https://kedro.org)
 
-## Overview
+## Description
 
-This is your new Kedro project with PySpark setup, which was generated using `kedro 0.19.9`.
-Take a look at the [Kedro documentation](https://docs.kedro.org) to get started.
+gamersAI is an MLOps project that is designed to predict the number of potential users of a game based on its parameters. This model can significantly contribute to more effective promotion of video games.
 
-## Rules and guidelines
+The database was created based on 80,000 game information taken from the publicly available Steam API.
 
-In order to get the best out of the template:
+We were able to create a stable predictive model that can predict the average number of potential users with a score of 83% accuracy.
 
-* Don't remove any lines from the `.gitignore` file we provide
-* Make sure your results can be reproduced by following a [data engineering convention](https://docs.kedro.org/en/stable/faq/faq.html#what-is-data-engineering-convention)
-* Don't commit data to your repository
-* Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
+## Frontend and Backend
+The main server that handles all queries is the REST API controller `api.py`. It is responsible for communication between the database, the kedro pipeline and the web application. The main module handling web traffic is the `fastapi` library. Depending on the operation being performed, the controller can query the kedro pipeline for prediction or communicate directly with the database. 
 
-## First setup
+Responsible for the user interface is the `streamlit` library, which allows quick and easy development of web applications. It connects to the server executes queries to it.
+
+![system architecture](img/system_arch.png)
+
+## Pipeline structure
+
+The pipeline consists of 8 modules. The first to be executed is `data_processing`, where raw data is processed. After that, each model is trained using this data. As the last one, `pipeline_autogluon` is executed, which in its own way is a summary of all the previous models.
+
+```
+pipelines
+├── data_processing
+├── dt_pipeline
+├── elasticnet_pipeline
+├── gradient_boosting_pipeline
+├── knn_pipeline
+├── pipeline_autogluon
+├── random_forest_pipeline
+└── xgboost_pipeline
+```
+
+![alt text](img/kedro_pipeline.png)
+
+Also implemented is integration with the *[Weights & Biases](https://wandb.ai/site/)* system, which serves to process and visualize data from running pipelines. This system is directly integrated with the pipeline therefore its execution may require logging into the W&B service.
+
+![alt text](img/wandb_heatmap.png)
+
+## Database integration
+
+The `db_controller.py` module is responsible for database integration. This controller, using the `sqlite3` library, establishes a direct connection to the database. This connection is mainly used by the `api.py` API controller.
+
+```python
+DB_PATH = “data/01_raw/games.db”
+
+def get_db_connection():
+    return sqlite3.connect(DB_PATH)
+```
+
+It is worth noting that the `games.db` file must be in the described location also because of access through the kedro pipeline.
+
+## First run
 
 > [!IMPORTANT]  
-> Please make sure that you have installed **Python 3.10**
+> Make sure you are using **Python 3.10**.
 
-### Create virtual environment using `venv`
+### Create the environment using `venv`.
 
 ```
 python -m venv venv
 ```
 
-### Activate virtual environment
-> Note: if you are working on Windows use this command first:
+### Start the virtual environment
+> Note: If you are using Windows, run the following command first
 > 
-> `Set-ExecutionPolicy Unrestricted -Scope Process`
+> `Set-ExecutionPolicy Unrestricted -Scope Process`.
 
 ```
 .\venv\Scripts\activate
 ```
 
-### Declare any dependencies in `requirements.txt` for `pip` installation.
+### Declare dependencies `requirements.txt` using `pip` installation.
 
-To install them, run:
+To install all dependencies, run:
 
 ```
 pip install -r requirements.txt
 ```
 
-## How to run your Kedro pipeline
+### Database
+Download the database file [here](https://huggingface.co/datasets/Mroxny/gamersAI/resolve/main/games.db) and place it in the folder `/data/01_raw`. 
 
-You can run your Kedro project with:
+## Run the pipeline
+
+The entire pipeline can be executed by running:
 
 ```
 kedro run
 ```
 
-## How to test your Kedro project
+## Running the system
 
-Have a look at the files `src/tests/test_run.py` and `src/tests/pipelines/data_science/test_pipeline.py` for instructions on how to write your tests. Run the tests as follows:
-
-```
-pytest
-```
-
-To configure the coverage threshold, look at the `.coveragerc` file.
-
-## Project dependencies
-
-To see and update the dependency requirements for your project use `requirements.txt`. Install the project requirements with `pip install -r requirements.txt`.
-
-[Further information about project dependencies](https://docs.kedro.org/en/stable/kedro_project_setup/dependencies.html#project-specific-dependencies)
-
-## How to work with Kedro and notebooks
-
-> Note: Using `kedro jupyter` or `kedro ipython` to run your notebook provides these variables in scope: `catalog`, `context`, `pipelines` and `session`.
->
-> Jupyter, JupyterLab, and IPython are already included in the project requirements by default, so once you have run `pip install -r requirements.txt` you will not need to take any extra steps before you use them.
-
-### Jupyter
-To use Jupyter notebooks in your Kedro project, you need to install Jupyter:
+Starting the whole system is done in two steps. First, start the backend server:
 
 ```
-pip install jupyter
+fastapi run api.py
 ```
-
-After installing Jupyter, you can start a local notebook server:
-
+In the next step, run the web application that connects to the server
 ```
-kedro jupyter notebook
+streamlit run streamlit_app.py
 ```
-
-### JupyterLab
-To use JupyterLab, you need to install it:
-
-```
-pip install jupyterlab
-```
-
-You can also start JupyterLab:
-
-```
-kedro jupyter lab
-```
-
-### IPython
-And if you want to run an IPython session:
-
-```
-kedro ipython
-```
-
-### How to ignore notebook output cells in `git`
-To automatically strip out all output cell contents before committing to `git`, you can use tools like [`nbstripout`](https://github.com/kynan/nbstripout). For example, you can add a hook in `.git/config` with `nbstripout --install`. This will run `nbstripout` before anything is committed to `git`.
-
-> *Note:* Your output cells will be retained locally.
-
-## Package your Kedro project
-
-[Further information about building project documentation and packaging your project](https://docs.kedro.org/en/stable/tutorial/package_a_project.html)
