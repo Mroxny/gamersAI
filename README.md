@@ -102,3 +102,8 @@ In the next step, run the web application that connects to the server
 ```
 streamlit run streamlit_app.py
 ```
+
+## Contributors
+<a href="https://github.com/Mroxny/gamersAI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Mroxny/gamersAI" />
+</a>

@@ -102,3 +102,7 @@ W następnym kroku należy uruchomić aplikację webową łączącą się z serw
 ```
 streamlit run streamlit_app.py
 ```
+## Współtwórcy
+<a href="https://github.com/Mroxny/gamersAI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Mroxny/gamersAI" />
+</a>
