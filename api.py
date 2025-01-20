@@ -138,4 +138,14 @@ async def add_game(game: GameDTO):
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.delete("/game/{name}")
+async def delete_game(name: str):
+    """Delete a game by name."""
+    try:
+        dbc.delete_game_by_name(name)
+        return {"message": "Game deleted successfully"}
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=400, detail=str(e))
 

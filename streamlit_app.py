@@ -143,7 +143,7 @@ def main():
     st.title("Game API Interface")
     st.markdown("Select an option below to interact with the API.")
 
-    option = st.selectbox("Choose an option", ["Predict Estimated Owners", "Get Game by Name", "Get All Games", "Add Game", "Retrain model"])
+    option = st.selectbox("Choose an option", ["Predict Estimated Owners", "Get Game by Name", "Get All Games", "Add Game", "Retrain model", "Delete Game"])
 
     if option == "Predict Estimated Owners":
         st.subheader("Predict Estimated Owners")
@@ -358,6 +358,16 @@ def main():
 
         if st.button("Add Game"):
             try:
+                # Convert Estimated Owners
+                estimated_owners = game_data["Estimated_owners"]
+                if "-" not in estimated_owners:
+                    try:
+                        estimated_owners = f"{int(estimated_owners) - 5000} - {int(estimated_owners) + 5000}"
+                    except ValueError:
+                        st.error("Invalid input for Estimated Owners. Please enter a valid range or single number.")
+                        return
+                game_data["Estimated_owners"] = estimated_owners
+
                 game = dtos.GameDTO(**game_data)
                 response = requests.post("http://127.0.0.1:8000/games/", json=game.dict())
                 if response.status_code == 200:
@@ -377,6 +387,19 @@ def main():
                     st.success("Retraining completed successfully!")
                 except Exception as e:
                     st.error(f"An error occurred during retraining: {e}")
+    elif option == "Delete Game":
+        st.subheader("Delete Game")
+        game_name = st.text_input("Enter the game name to delete")
+
+        if st.button("Delete Game"):
+            try:
+                response = requests.delete(f"http://127.0.0.1:8000/game/{game_name}")
+                if response.status_code == 200:
+                    st.success("Game deleted successfully!")
+                else:
+                    st.error(f"Error: {response.status_code} - {response.text}")
+            except Exception as e:
+                st.error(f"Request failed: {e}")
 
 
 if __name__ == "__main__":
