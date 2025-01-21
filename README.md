@@ -8,7 +8,7 @@ gamersAI is an MLOps project that is designed to predict the number of potential
 
 The database was created based on 80,000 game information taken from the publicly available Steam API.
 
-We were able to create a stable predictive model that can predict the average number of potential users with a score of 83% accuracy.
+We were able to create a stable AI model that can predict the average number of potential users with a score of 83% accuracy.
 
 ## Frontend and Backend
 The main server that handles all queries is the REST API controller `api.py`. It is responsible for communication between the database, the kedro pipeline and the web application. The main module handling web traffic is the `fastapi` library. Depending on the operation being performed, the controller can query the kedro pipeline for prediction or communicate directly with the database. 

@@ -8,7 +8,7 @@ gamerAI to projekt MLOps, który ma za zadanie przewidywać liczbę potencjalnyc
 
 Baza danych została utworzona na podstawie 80,000 informacji o grach zaczerpniętych z ogólnodostępnego steam API.
 
-Udało nam się stworzyć stabilny model predykcyjny, który z wynikiem 83% dokładności jest w stanie przewidzieć średnią ilość potencjalnych użytkowników.
+Udało nam się stworzyć stabilny model sztucznej inteligencji, który z wynikiem 83% dokładności jest w stanie przewidzieć średnią ilość potencjalnych użytkowników.
 
 ## Frontend i Backend
 Głównym serwerem obsługujący wszystkie zapytania jest REST API kontroler `api.py`. Odpowiada on za komunikację miedzy bazą danych, potokiem kedro i aplikacją webową. Głównym modułem obsługującym ruch sieciowy jest biblioteka `fastapi`. W zaleznosci od wykonywanej operacji, kontroler może odpytywac potok kedro w celu uzyskania predykcji lub komunikować się bezpośrednio z bazą danych. 
